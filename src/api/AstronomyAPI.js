@@ -1,4 +1,3 @@
-import { MOCK_DATA } from './mock';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 let LIKE_MAP;
@@ -49,7 +48,7 @@ export const getManyAstronomy = async (start = TODAY, end = TODAY) => {
 	if (!response.ok) throw new Error('unable to query api');
 
 	const astronomyArray = await response.json();
-	return astronomyArray.reverse();
+	return astronomyArray;
 };
 
 const dateToString = (date) => {
