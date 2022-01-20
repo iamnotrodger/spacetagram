@@ -1,3 +1,5 @@
+import { MOCK_DATA, shuffle, sleep } from './mock';
+
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 let LIKE_MAP;
@@ -36,6 +38,11 @@ export const isLiked = (date) => {
 const TODAY = new Date();
 
 export const getManyAstronomy = async (start = TODAY, end = TODAY) => {
+	if (process.env.NODE_ENV === 'development') {
+		await sleep(1500);
+		return shuffle(MOCK_DATA);
+	}
+
 	const url = 'https://api.nasa.gov/planetary/apod';
 	const queryString = buildQueryString({
 		api_key: API_KEY,
@@ -48,7 +55,7 @@ export const getManyAstronomy = async (start = TODAY, end = TODAY) => {
 	if (!response.ok) throw new Error('unable to query api');
 
 	const astronomyArray = await response.json();
-	return astronomyArray;
+	return astronomyArray.reverse();
 };
 
 const dateToString = (date) => {
