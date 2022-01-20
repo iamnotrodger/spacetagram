@@ -1,5 +1,5 @@
 import { MOCK_DATA } from './mock';
-// const API_KEY = process.env.REACT_APP_API_KEY;
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 let LIKE_MAP;
 
@@ -32,4 +32,39 @@ export const removeLike = (date) => {
 export const isLiked = (date) => {
 	if (!LIKE_MAP) return false;
 	return LIKE_MAP.get(date) !== undefined;
+};
+
+const TODAY = new Date();
+
+export const getManyAstronomy = async (start = TODAY, end = TODAY) => {
+	const url = 'https://api.nasa.gov/planetary/apod';
+	const queryString = buildQueryString({
+		api_key: API_KEY,
+		start_date: dateToString(start),
+		end_date: dateToString(end),
+		thumbs: 'True',
+	});
+	const response = await fetch(url + queryString);
+
+	if (!response.ok) throw new Error('unable to query api');
+
+	const astronomyArray = await response.json();
+	return astronomyArray.reverse();
+};
+
+const dateToString = (date) => {
+	return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+};
+
+const buildQueryString = (queryObject) => {
+	if (queryObject == null || Object.keys(queryObject).length === 0) {
+		return '';
+	}
+
+	let queryString = '?';
+	for (const [key, value] of Object.entries(queryObject)) {
+		queryString += `${key}=${value}&`;
+	}
+
+	return queryString.slice(0, -1);
 };
